@@ -1,3 +1,10 @@
 #!/usr/bin/env ruby
 
+ENV['BUNDLE_GEMFILE'] ||=  File.expand_path('../../Gemfile', __FILE__)
+
+$:.unshift(File.expand_path('../../bundle', __FILE__))
+
+require 'bundler/setup'
 require 'sendmail'
+
+Sendmail::CLI.new.run!
