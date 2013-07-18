@@ -1,4 +1,3 @@
-
 require "sendmail/version"
 require 'sendmail/application'
 require 'sendmail/cli'

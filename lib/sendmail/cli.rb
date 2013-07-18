@@ -4,6 +4,7 @@ class Sendmail::CLI
   def run!
     # mailx [-BDdEFintv~] [-s subject] [-a attachment ] [-c cc-addr] [-b bcc-addr] [-r from-addr] [-h hops] [-A account] [-S variable[=value]] to-addr . . .
     options = {}
+
     OptionParser.new do |opts|
       opts.banner = "Usage: #{$PROGRAM_NAME} [options]"
 
@@ -26,6 +27,24 @@ class Sendmail::CLI
 
       opts.on("-r from-addr") do |from|
         options[:from] = from
+      end
+
+      opts.on("-S variable[=value]") do |pair|
+        options[:extended_options] ||= {}
+        if pair =~ /=/
+          keys, value = pair.split('=').collect(&:strip)
+          keys = keys.split('.')
+          last_key = keys.pop
+
+          last_hsh = keys.inject(options[:extended_options]) do |memo, key|
+            memo[key] ||= {}
+            memo[key]
+          end
+
+          last_hsh[last_key] = value
+        else
+          options[:extended_options][pair] = true
+        end
       end
 
       opts.on_tail("-v", "--[no-]verbose", "Run verbosely") do |v|
